@@ -1,14 +1,22 @@
 #pragma once
 
-// TODO: Update with your own tag for logs
-#define TAG "MyApp"
+#define TAG "LightUp"
 
 #include <furi.h>
+#include <furi_hal_gpio.h>
 
-// TODO: Add any scenes you need
-// ids for all scenes used by the app
-typedef enum { MyAppScenes_Starting, MyAppScenes_count } MyAppScenes;
+typedef enum { LightUpScenes_Starting, LightUpScenes_GPIOTest, LightUpScenes_count } LightUpScenes;
 
-// TODO: Addany views you need
-// ids for the 2 types of view used by the app
-typedef enum { MyAppViews_StartingView, MyAppViews_count } MyAppViews;
+typedef enum {
+    LightUpViews_StartingView,
+    LightUpViews_VariableListView,
+    LightUpViews_count
+} LightUpViews;
+
+typedef struct {
+    bool gpioTestPinStatus;
+    // Required because there isn't a trivial way to map
+    // GpioPin objects to an indexable value.
+    int gpioPinIndex;
+    const GpioPin* gpioPin;
+} LightUpData_t;

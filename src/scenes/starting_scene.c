@@ -16,7 +16,7 @@ static void playback_view_draw_callback(Canvas* canvas, void* model) {
 void scene_on_enter_starting_scene(void* context) {
     FURI_LOG_I(TAG, "scene_on_enter_starting_scene");
     AppContext_t* app = (AppContext_t*)context;
-    View_t* playbackView = app->activeViews[MyAppViews_StartingView];
+    View_t* playbackView = app->activeViews[LightUpViews_StartingView];
 
     // Configure the custom view
     view_set_draw_callback(playbackView->viewData, playback_view_draw_callback);
@@ -24,7 +24,7 @@ void scene_on_enter_starting_scene(void* context) {
 
     // Set the currently active view
     FURI_LOG_I(TAG, "setting active view");
-    view_dispatcher_switch_to_view(app->view_dispatcher, MyAppViews_StartingView);
+    view_dispatcher_switch_to_view(app->view_dispatcher, LightUpViews_StartingView);
 }
 
 /** main menu event handler - switches scene based on the event */
