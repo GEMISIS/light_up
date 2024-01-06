@@ -7,6 +7,17 @@
 #include "../app_context.h"
 #include "../main.h"
 
+static void testLed(const LightUpData_t* lightUpData) {
+    switch(lightUpData->ledType) {
+    case SingleLED:
+        setGpioPin(lightUpData->gpioPin, lightUpData->gpioTestPinStatus);
+        break;
+    default:
+        FURI_LOG_E(TAG, "Error with selected LED type %d", lightUpData->ledType);
+        break;
+    }
+}
+
 static char* gpio_pin_option_names[] = {"A7", "A6", "A4", "B3", "B2", "C3"};
 static void gpio_pin_type_option_change(VariableItem* item) {
     AppContext_t* app = variable_item_get_context(item);
@@ -38,7 +49,7 @@ static void gpio_pin_type_option_change(VariableItem* item) {
         lightUpData->gpioPin = &gpio_ext_pa7;
         break;
     }
-    setGpioPin(lightUpData->gpioPin, lightUpData->gpioTestPinStatus);
+    testLed(lightUpData);
 }
 
 static uint8_t gpio_option_values[] = {0, 1};
@@ -51,7 +62,7 @@ static void gpio_type_option_change(VariableItem* item) {
     // Turn the GPIO pin off first
     setGpioPin(lightUpData->gpioPin, false);
     lightUpData->gpioTestPinStatus = index;
-    setGpioPin(lightUpData->gpioPin, lightUpData->gpioTestPinStatus);
+    testLed(lightUpData);
 }
 
 /** resets the menu, gives it content, callbacks and selection enums */

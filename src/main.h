@@ -5,6 +5,11 @@
 #include <furi.h>
 #include <furi_hal_gpio.h>
 
+typedef enum {
+    SingleLED,
+    WS8211,
+} LedType;
+
 typedef enum { LightUpScenes_Starting, LightUpScenes_GPIOTest, LightUpScenes_count } LightUpScenes;
 
 typedef enum {
@@ -19,4 +24,5 @@ typedef struct {
     // GpioPin objects to an indexable value.
     int gpioPinIndex;
     const GpioPin* gpioPin;
+    LedType ledType;
 } LightUpData_t;
