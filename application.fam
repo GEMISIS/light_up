@@ -2,16 +2,16 @@
 
 App(
     appid="light_up",  # Must be unique
-    name="App light_up",  # Displayed in menus
+    name="Light Up",  # Displayed in menus
     apptype=FlipperAppType.EXTERNAL,
-    entry_point="light_up_app",
+    entry_point="main_entry",
     stack_size=2 * 1024,
-    fap_category="Examples",
-    # Optional values
-    # fap_version="0.1",
-    fap_icon="light_up.png",  # 10x10 1-bit PNG
-    # fap_description="A simple app",
-    # fap_author="J. Doe",
-    # fap_weburl="https://github.com/user/light_up",
+    fap_category="GPIO",
+    fap_version="1.0",
+    fap_icon="icon.png",  # 10x10 1-bit PNG
+    fap_description="A template project for Flipper Zero applications.",
+    fap_author="Gerald McAlister",
+    fap_weburl="https://github.com/GEMISIS/light_up",
     fap_icon_assets="images",  # Image assets to compile for this application
+    sources=["src/*.c", "src/scenes/*.c"],
 )
