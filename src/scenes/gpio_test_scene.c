@@ -3,20 +3,9 @@
 #include <furi_hal_resources.h>
 
 #include "gpio_test_scene.h"
+#include "../utils/gpio_helper.h"
 #include "../app_context.h"
 #include "../main.h"
-
-static void updatePinState(const LightUpData_t* lightUpData, bool forceOff) {
-    FURI_LOG_I(TAG, "Updating pin state to %s", lightUpData->gpioTestPinStatus ? "On" : "Off");
-    if(lightUpData->gpioTestPinStatus && !forceOff) {
-        furi_hal_gpio_init_simple(lightUpData->gpioPin, GpioModeOutputPushPull);
-        furi_hal_gpio_write(lightUpData->gpioPin, true);
-    } else {
-        furi_hal_gpio_init(
-            lightUpData->gpioPin, GpioModeOutputOpenDrain, GpioPullNo, GpioSpeedLow);
-        furi_hal_gpio_write(lightUpData->gpioPin, false);
-    }
-}
 
 static char* gpio_pin_option_names[] = {"A7", "A6", "A4", "B3", "B2", "C3"};
 static void gpio_pin_type_option_change(VariableItem* item) {
@@ -26,7 +15,8 @@ static void gpio_pin_type_option_change(VariableItem* item) {
     lightUpData->gpioPinIndex = variable_item_get_current_value_index(item);
     variable_item_set_current_value_text(item, gpio_pin_option_names[lightUpData->gpioPinIndex]);
 
-    updatePinState(lightUpData, true);
+    // Turn the GPIO pin off first
+    setGpioPin(lightUpData->gpioPin, false);
     switch(lightUpData->gpioPinIndex) {
     case 5:
         lightUpData->gpioPin = &gpio_ext_pc3;
@@ -48,7 +38,7 @@ static void gpio_pin_type_option_change(VariableItem* item) {
         lightUpData->gpioPin = &gpio_ext_pa7;
         break;
     }
-    updatePinState(lightUpData, false);
+    setGpioPin(lightUpData->gpioPin, lightUpData->gpioTestPinStatus);
 }
 
 static uint8_t gpio_option_values[] = {0, 1};
@@ -58,9 +48,10 @@ static void gpio_type_option_change(VariableItem* item) {
     LightUpData_t* lightUpData = ((LightUpData_t*)app->additionalData);
     uint8_t index = variable_item_get_current_value_index(item);
     variable_item_set_current_value_text(item, gpio_option_names[index]);
-    updatePinState(lightUpData, true);
+    // Turn the GPIO pin off first
+    setGpioPin(lightUpData->gpioPin, false);
     lightUpData->gpioTestPinStatus = index;
-    updatePinState(lightUpData, false);
+    setGpioPin(lightUpData->gpioPin, lightUpData->gpioTestPinStatus);
 }
 
 /** resets the menu, gives it content, callbacks and selection enums */
@@ -108,5 +99,5 @@ void scene_on_exit_gpio_test_scene(void* context) {
     AppContext_t* app = (AppContext_t*)context;
     LightUpData_t* lightUpData = ((LightUpData_t*)app->additionalData);
     lightUpData->gpioTestPinStatus = false;
-    updatePinState(lightUpData, true);
+    setGpioPin(lightUpData->gpioPin, false);
 }
