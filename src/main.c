@@ -37,10 +37,10 @@ const SceneManagerHandlers scene_event_handlers = {
 int setupViews(AppContext_t** appContext) {
     // TODO: Create views here for your app
     FURI_LOG_I(TAG, "Creating views");
-    View_t* startingView = malloc(sizeof(View_t));
-    startingView->viewData = view_alloc();
-    startingView->viewId = LightUpViews_StartingView;
-    startingView->type = VIEW;
+    View_t* menuView = malloc(sizeof(View_t));
+    menuView->viewData = menu_alloc();
+    menuView->viewId = LightUpViews_MenuView;
+    menuView->type = MENU;
 
     View_t* variableItemListView = malloc(sizeof(View_t));
     variableItemListView->viewData = variable_item_list_alloc();
@@ -49,9 +49,9 @@ int setupViews(AppContext_t** appContext) {
 
     // Add views to the app context to be managed there
     FURI_LOG_I(TAG, "Adding views to app context");
-    AppContextStatus result = addViewToAppContext(appContext, startingView);
+    AppContextStatus result = addViewToAppContext(appContext, menuView);
     if(result != APP_CONTEXT_OK) {
-        FURI_LOG_E(TAG, "There was a problem adding the view %d!", startingView->viewId);
+        FURI_LOG_E(TAG, "There was a problem adding the view %d!", menuView->viewId);
         return -1;
     }
 
@@ -87,7 +87,7 @@ int32_t main_entry(void* p) {
             view_dispatcher_attach_to_gui(
                 appContext->view_dispatcher, gui, ViewDispatcherTypeFullscreen);
             // TODO: Update with name of starting scene
-            scene_manager_next_scene(appContext->scene_manager, LightUpScenes_GPIOTest);
+            scene_manager_next_scene(appContext->scene_manager, LightUpScenes_Starting);
             FURI_LOG_D(TAG, "Starting the view dispatcher");
             view_dispatcher_run(appContext->view_dispatcher);
         }

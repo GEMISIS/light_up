@@ -8,7 +8,7 @@
 typedef enum { LightUpScenes_Starting, LightUpScenes_GPIOTest, LightUpScenes_count } LightUpScenes;
 
 typedef enum {
-    LightUpViews_StartingView,
+    LightUpViews_MenuView,
     LightUpViews_VariableListView,
     LightUpViews_count
 } LightUpViews;
