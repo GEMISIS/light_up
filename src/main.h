@@ -6,8 +6,9 @@
 #include <furi_hal_gpio.h>
 
 typedef enum {
-    SingleLED,
+    SingleLED = 0,
     WS8211,
+    LedTypeSize,
 } LedType;
 
 typedef enum { LightUpScenes_Starting, LightUpScenes_GPIOTest, LightUpScenes_count } LightUpScenes;
