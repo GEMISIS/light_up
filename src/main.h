@@ -8,6 +8,7 @@
 typedef enum {
     SingleLED = 0,
     WS8211,
+    WS2812B,
     LedTypeSize,
 } LedType;
 
@@ -26,4 +27,5 @@ typedef struct {
     int gpioPinIndex;
     const GpioPin* gpioPin;
     LedType ledType;
+    int lightColorSelection;
 } LightUpData_t;

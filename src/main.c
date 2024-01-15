@@ -79,6 +79,7 @@ int32_t main_entry(void* p) {
         ((LightUpData_t*)appContext->additionalData)->gpioPin = &gpio_ext_pa7;
         ((LightUpData_t*)appContext->additionalData)->gpioTestPinStatus = false;
         ((LightUpData_t*)appContext->additionalData)->ledType = SingleLED;
+        ((LightUpData_t*)appContext->additionalData)->lightColorSelection = 0;
 
         result = setupViews(&appContext);
         if(result == 0) {

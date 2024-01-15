@@ -8,6 +8,16 @@
 #include "../app_context.h"
 #include "../main.h"
 
+/**
+ * Colors in the format of BGR
+*/
+typedef enum {
+    Red = 0xff0000,
+    Green = 0x00ff00,
+    Blue = 0x0000ff,
+} LightColors;
+
+static LightColors gpio_light_color_options[] = {Red, Green, Blue};
 static void testLed(const LightUpData_t* lightUpData) {
     switch(lightUpData->ledType) {
     case SingleLED:
@@ -15,8 +25,16 @@ static void testLed(const LightUpData_t* lightUpData) {
         break;
     case WS8211:
         if(lightUpData->gpioTestPinStatus) {
+            // furi_hal_power_enable_otg();
+            // sendRgbToWS8211(
+            //     lightUpData->gpioPin, gpio_light_color_options[lightUpData->lightColorSelection]);
+        }
+        break;
+    case WS2812B:
+        if(lightUpData->gpioTestPinStatus) {
             furi_hal_power_enable_otg();
-            // sendRgbToWS8211(lightUpData->gpioPin, 0x0000ff);
+            sendRgbToWS2812B(
+                lightUpData->gpioPin, gpio_light_color_options[lightUpData->lightColorSelection]);
         }
         break;
     default:
@@ -55,7 +73,7 @@ static void gpio_selected_pin_change(VariableItem* item) {
     testLed(lightUpData);
 }
 
-static char* gpio_pin_led_type_names[] = {"Single Led", "WS8211"};
+static char* gpio_pin_led_type_names[] = {"Circuit", "WS8211", "WS2812B"};
 static void gpio_pin_led_type_change(VariableItem* item) {
     AppContext_t* app = variable_item_get_context(item);
     LightUpData_t* lightUpData = ((LightUpData_t*)app->additionalData);
@@ -66,6 +84,17 @@ static void gpio_pin_led_type_change(VariableItem* item) {
     setGpioPin(lightUpData->gpioPin, false);
     // Always power cycle to clear the previous lights
     furi_hal_power_disable_otg();
+    testLed(lightUpData);
+}
+
+static char* gpio_light_color_names[] = {"Red", "Green", "Blue"};
+static void gpio_light_color_change(VariableItem* item) {
+    AppContext_t* app = variable_item_get_context(item);
+    LightUpData_t* lightUpData = ((LightUpData_t*)app->additionalData);
+    lightUpData->lightColorSelection = variable_item_get_current_value_index(item);
+    variable_item_set_current_value_text(
+        item, gpio_light_color_names[lightUpData->lightColorSelection]);
+    // Turn the GPIO pin off first
     testLed(lightUpData);
 }
 
@@ -101,6 +130,19 @@ void scene_on_enter_gpio_test_scene(void* context) {
     variable_item_set_current_value_index(item, ((LightUpData_t*)app->additionalData)->ledType);
     variable_item_set_current_value_text(
         item, gpio_pin_led_type_names[((LightUpData_t*)app->additionalData)->ledType]);
+
+    // Add light color for where available
+    item = variable_item_list_add(
+        app->activeViews[LightUpViews_VariableListView]->viewData,
+        "Color",
+        COUNT_OF(gpio_light_color_names),
+        gpio_light_color_change,
+        app);
+
+    variable_item_set_current_value_index(
+        item, ((LightUpData_t*)app->additionalData)->lightColorSelection);
+    variable_item_set_current_value_text(
+        item, gpio_light_color_names[((LightUpData_t*)app->additionalData)->lightColorSelection]);
 
     // Set the currently active view
     FURI_LOG_I(TAG, "setting active view");
